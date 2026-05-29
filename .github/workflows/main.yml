@@ -22,20 +22,19 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev
+        # Dependências extras essenciais para o motor de áudio e fontes do Pygame não quebrarem:
+        sudo apt-get install -y libasound2-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
         pip3 install --user --upgrade buildozer cython virtualenv
 
-    # NOVA ETAPA: Aceita todas as licenças do Android SDK automaticamente
     - name: Accept Android SDK Licenses
       run: |
         mkdir -p ~/.android
         touch ~/.android/repositories.cfg
-        # Força o Buildozer a aceitar os termos do Google nas configurações padrões
-        export YAB_ACCEPT_SDK_LICENSES=1
 
     - name: Build with Buildozer
       run: |
         export PATH=$PATH:~/.local/bin
-        # O comando "yes |" responde automaticamente "sim" para qualquer pergunta no terminal
+        buildozer android clean
         yes | buildozer android debug
 
     - name: Upload APK Artifact
